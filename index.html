@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot and Solve | Tactical OSINT CTF</title>
+    <meta name="description" content="A premium OSINT CTF platform for intelligence professionals and enthusiasts.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Producer Credit 1 -->
+    <div id="credit-1" class="overlay credit-overlay">
+        <h2 class="mono reveal-fade">KGiSL Institute of Technology presents</h2>
+    </div>
+
+    <!-- Producer Credit 2 -->
+    <div id="credit-2" class="overlay credit-overlay hidden">
+        <h2 class="mono reveal-fade">From the Department of CYS, AIML, IT</h2>
+    </div>
+
+    <!-- Cinematic Intro Overlay -->
+    <div id="intro-overlay" class="overlay hidden">
+        <div class="intro-content">
+            <div class="glitch-wrapper">
+                <h1 id="reveal-title" data-text="SPOT AND SOLVE">SPOT AND SOLVE</h1>
+            </div>
+            <div class="scan-line"></div>
+            <div id="loading-meter">
+                <div class="meter-bar"></div>
+                <div class="meter-text">INITIALIZING INTEL_LINK... [0%]</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tactical Login Overlay -->
+    <div id="login-overlay" class="overlay hidden">
+        <div class="auth-box">
+            <h2 class="mono">SYSTEM_ACCESS_REQUIRED</h2>
+            <div class="auth-modes">
+                <button class="auth-tab active" data-mode="login" data-role="player">PLAYER_LOGIN</button>
+                <button class="auth-tab" data-mode="login" data-role="admin">ADMIN_LOGIN</button>
+                <button class="auth-tab" data-mode="register" data-role="player">CREATE_ACCOUNT</button>
+            </div>
+            <div class="auth-form">
+                <div class="input-group">
+                    <label class="mono">IDENTIFIER</label>
+                    <input type="text" placeholder="GHOST_OPERATOR_08" id="auth-id">
+                </div>
+                <div class="input-group">
+                    <label class="mono">SECURE_TOKEN</label>
+                    <input type="password" placeholder="********" id="auth-token">
+                </div>
+                <!-- Registration Only Fields -->
+                <div class="input-group reg-only">
+                    <label class="mono">GMAIL_ADDRESS</label>
+                    <input type="email" placeholder="operator@gmail.com" id="auth-gmail">
+                </div>
+                <div class="input-group reg-only">
+                    <label class="mono">PHONE_IDENTIFIER</label>
+                    <input type="tel" placeholder="+1234567890" id="auth-phone">
+                </div>
+                <div id="auth-feedback" class="mono" style="color: #ff4d4d; margin-bottom: 1rem; font-size: 0.8rem; min-height: 1.2rem;"></div>
+                <button class="btn btn-primary btn-block" id="login-trigger">AUTHORIZE_ACCESS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission Briefing / Instructions Overlay -->
+    <div id="instructions-overlay" class="overlay hidden">
+        <div class="briefing-box">
+            <h2 class="mono highlight">MODULE_BRIEFING: PROJECT_SPOT_&_SOLVE</h2>
+            <div class="briefing-content mono">
+                <p>> INITIATING RECONNAISSANCE PROTOCOLS...</p>
+                <p>> OBJECTIVE: IDENTIFY GEOGRAPHICAL ORIGIN OF TARGET ASSETS.</p>
+                <p>> PROTOCOL 01: ANALYZE ARCHITECTURAL MARKERS AND SHADOW PATTERNS.</p>
+                <p>> PROTOCOL 02: DECODE SIGNAGE AND REFLECTIVE DATA POINTS.</p>
+                <p>> PROTOCOL 03: TRIANGULATE COORDINATES WITH < 10M MARGIN OF ERROR.</p>
+                        <p>> WARNING: OPSEC IS PARAMOUNT. DO NOT LEAVE DIGITAL TRACES.</p>
+            </div>
+            <button class="btn btn-glow btn-block" id="start-mission-trigger">ACKNOWLEDGE & PROCEED</button>
+        </div>
+    </div>
+
+    <!-- Tactical Modal for Challenges -->
+    <div id="challenge-modal" class="overlay hidden">
+        <div class="modal-box">
+            <button class="modal-close mono">× CLOSE</button>
+            <div class="modal-header">
+                <div class="header-left">
+                    <span class="difficulty" id="modal-diff">DIFFICULTY</span>
+                    <h2 id="modal-title">MISSION_TITLE</h2>
+                </div>
+                <div id="modal-timer" class="mono">TIME_ELAPSED: 00:00</div>
+            </div>
+            <div class="modal-body">
+                <!-- Start Screen -->
+                <div id="modal-start-screen" class="tactical-start">
+                    <div class="briefing-header mono">AWAITING_OPERATOR_READY...</div>
+                    <button id="start-mission-btn" class="btn btn-glow">START_MISSION</button>
+                </div>
+
+                <!-- Mission Content (Hidden) -->
+                <div id="modal-mission-content" class="mission-details hidden">
+                    <p id="modal-desc">Mission description goes here.</p>
+                    <div class="download-zone">
+                        <span class="mono">ATTACHED_ASSET.PNG</span>
+                        <a href="#" id="modal-download" download class="btn btn-primary">DOWNLOAD_INTEL</a>
+                    </div>
+                    
+                    <div class="flag-submission">
+                        <label class="mono">SUBMIT_TARGET_FLAG</label>
+                        <div class="input-row">
+                            <input type="text" id="flag-input" placeholder="FLAG{...}">
+                            <button class="btn btn-glow" id="submit-flag">SUBMIT</button>
+                        </div>
+                        <div id="flag-feedback" class="mono"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden initially) -->
+    <main id="main-content" class="hidden">
+        <header>
+            <nav class="container">
+                <div class="logo">Spot and Solve<span class="dot">.</span></div>
+                <ul class="nav-links">
+                    <li><a href="#hero">HOME</a></li>
+                    <li><a href="#challenges">CHALLENGES</a></li>
+                    <li><a href="#" id="logout-trigger">LOGOUT</a></li>
+                </ul>
+                <a href="dashboard.html" class="btn btn-primary">DASHBOARD</a>
+            </nav>
+        </header>
+
+        <section id="hero" class="hero-section">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <div class="hero-labels mono">OPERATIONAL_RECON_PLATFORM // v1.0.4</div>
+                    <h1 class="premium-title">
+                        MASTER <br>
+                        THE ART <br>
+                        OF <span class="accent-glow">OSINT</span>
+                    </h1>
+                    <p class="sub-text">Spot the hidden, solve the complex. The ultimate intelligence evaluation
+                        platform for digital defenders.</p>
+
+                    <div class="cta-group">
+                        <a href="#challenges" class="btn btn-glow">START_MISSION</a>
+                        <a href="#event-intel" class="btn btn-outline">NETWORK_INTEL</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <!-- HUD visualization - Enlarge for impact -->
+                    <div class="hud-box premium-hud">
+                        <div class="hud-inner">
+                            <div class="grid-lines"></div>
+                            <div class="radar-dot"></div>
+                            <div class="radar-sweep"></div>
+                            <div class="hud-decorators">
+                                <span class="dec-1"></span><span class="dec-2"></span>
+                                <span class="dec-3"></span><span class="dec-4"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-intel" class="intel-section">
+            <div class="container">
+                <div class="intel-grid">
+                    <div class="intel-card">
+                        <div class="card-tag mono">INSTITUTION_PROFILE</div>
+                        <h3>KGiSL Institute <br> of Technology</h3>
+                        <p>A pioneer in technical education, fostering innovation across Cyber Security (CYS),
+                            Artificial Intelligence & Machine Learning (AIML), and Information Technology (IT). Our
+                            mission is to engineer the next generation of digital defenders and intelligence architects.
+                        </p>
+                    </div>
+                    <div class="intel-card highlight-card">
+                        <div class="card-tag mono">MISSION_DATA</div>
+                        <h3>SPOT AND SOLVE: <br> THE EVENT</h3>
+                        <p>A flagship OSINT simulation designed by the departments of CYS, AIML, and IT. Operatives must
+                            demonstrate superior pattern recognition and geographical triangulation to uncover hidden
+                            locations. Only the most precise analysts will reach the top of the Recon Log.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges" class="challenges-section container">
+            <div class="section-title">
+                <h3>CHALLENGES</h3>
+                <div class="title-line"></div>
+            </div>
+            <div class="challenges-grid">
+                <!-- Module 01 -->
+                <div class="challenge-card" data-id="module_01" data-title="The Silent Guardian" data-diff="EASY"
+                    data-desc="Identify the statue in the image and determine its exact location (city and country)."
+                    data-img="chal_1.intel">
+                    <div class="card-header">
+                        <span class="difficulty">MODULE_01</span>
+                        <span class="category">BERLIN_INTEL</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>Sovereign Signal</h4>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-text">ACCESS_INTEL →</button>
+                    </div>
+                </div>
+
+                <!-- Module 02 -->
+                <div class="challenge-card" data-id="module_02" data-title="The Near Presence" data-diff="MEDIUM"
+                    data-desc="Submit the name of the Indian leader whose statue is situated near the identified location."
+                    data-img="chal_2.intel">
+                    <div class="card-header">
+                        <span class="difficulty">MODULE_02</span>
+                        <span class="category">TOKYO_RECON</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>Neon Reflex</h4>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-text">ACCESS_INTEL →</button>
+                    </div>
+                </div>
+
+                <!-- Module 03 -->
+                <div class="challenge-card" data-id="module_03" data-title="Midnight Disrupt" data-diff="HARD"
+                    data-desc="Fireworks display was disrupted when a firework launched prematurely. How many minutes were left until midnight?"
+                    data-img="chal_3.intel">
+                    <div class="card-header">
+                        <span class="difficulty">MODULE_03</span>
+                        <span class="category">LONDON_GRID</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>Timeless Trace</h4>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-text">ACCESS_INTEL →</button>
+                    </div>
+                </div>
+
+                <!-- Module 04 -->
+                <div class="challenge-card" data-id="module_04" data-title="The Colosseum Recon" data-diff="MEDIUM"
+                    data-desc="Submit the latitude and longitude of the given stadium."
+                    data-img="chal_4.intel">
+                    <div class="card-header">
+                        <span class="difficulty">MODULE_04</span>
+                        <span class="category">PARIS_SECTOR</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>Gilded Street</h4>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-text">ACCESS_INTEL →</button>
+                    </div>
+                </div>
+
+                <!-- Module 05 -->
+                <div class="challenge-card" data-id="module_05" data-title="The Coastal Beacon" data-diff="HARD"
+                    data-desc="Using given image showing a coastline and lighthouse, identify the name of the location?."
+                    data-img="chal_5.intel">
+                    <div class="card-header">
+                        <span class="difficulty">MODULE_05</span>
+                        <span class="category">NYC_ELEVATION</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>Vertical Horizon</h4>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-text">ACCESS_INTEL →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="container">
+            <div class="footer-content">
+                <p class="mono">&copy; 2026 SPOT_AND_SOLVE // PROJECT_CYBER_NOIR</p>
+                <div class="footer-links">
+                    <a href="#">SYSTEM_STATUS</a>
+                    <a href="#">OPSEC_POLICY</a>
+                    <a href="#">CONTACT_CHANNEL</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>

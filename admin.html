@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Intel | Spot and Solve</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <header>
+        <nav class="container">
+            <div class="logo">ADMIN_CORE<span class="dot">.</span></div>
+            <ul class="nav-links">
+                <li><a href="#" id="logout-trigger">LOGOUT</a></li>
+            </ul>
+            <div class="status-indicator">
+                <span class="pulse"></span> SYSTEM_ONLINE
+            </div>
+        </nav>
+    </header>
+
+    <main class="container admin-container">
+        <section class="admin-header">
+            <h1 class="mono highlight">COMMAND_CENTER: OPERATOR_STATUS</h1>
+            <div class="admin-controls">
+                <button id="refresh-data" class="btn-text">REFRESH_LIVE_DATA</button>
+                <button id="download-excel" class="btn btn-primary">DOWNLOAD_OPERATOR_LOG</button>
+                <a href="#" id="examine-data" class="mono highlight" style="margin-left: 1rem; font-size: 0.8rem;">[EXAMINE_DATA_SOURCE]</a>
+            </div>
+            <div class="stats-overview grid-3">
+                <div class="stat-card">
+                    <span class="stat-label">ACTIVE_OPERATORS</span>
+                    <span class="stat-value" id="stat-active-operators">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">MISSIONS_COMPLETED</span>
+                    <span class="stat-value" id="stat-missions-completed">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">SECURITY_THREATS</span>
+                    <span class="stat-value" id="stat-security-threats">0</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="rankings-section">
+            <h3 class="mono">GLOBAL_LEADERBOARD // TOP_OPERATORS</h3>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>IDENTIFIER</th>
+                        <th>LEVEL</th>
+                        <th>MISSIONS</th>
+                        <th>INTEL_POINTS</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Dynamic Content -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="grid-lines"></div>
+
+    <!-- Data Preview Modal -->
+    <div id="data-preview-modal" class="overlay hidden">
+        <div class="modal-box wide-modal">
+            <button class="modal-close mono" id="close-preview">× CLOSE</button>
+            <h2 class="mono accent-glow">OPERATOR_DATA_SOURCE_INSPECTOR</h2>
+            <div class="modal-scroll-container">
+                <table class="admin-table debug-table">
+                    <thead>
+                        <tr id="preview-headers">
+                            <!-- Dynamic -->
+                        </tr>
+                    </thead>
+                    <tbody id="preview-body">
+                        <!-- Dynamic -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

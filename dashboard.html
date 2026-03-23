@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Dashboard | Spot and Solve</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <header>
+        <nav class="container">
+            <div class="logo">Spot and Solve<span class="dot">.</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="index.html#challenges">CHALLENGES</a></li>
+                <li><a href="#" id="logout-trigger">LOGOUT</a></li>
+            </ul>
+            <div class="status-indicator">
+                <span class="pulse"></span> OPERATOR_ACTIVE
+            </div>
+        </nav>
+    </header>
+
+    <main class="container dashboard-container">
+        <section class="dashboard-header">
+            <div class="operator-profile">
+                <div class="avatar-box">
+                    <div class="avatar-glitch"></div>
+                </div>
+                <div class="operator-info">
+                    <span class="mono highlight">OPERATOR_ID: GHOST_PLAYER_01</span>
+                    <h1 class="premium-title">MISSION_REPORT</h1>
+                </div>
+            </div>
+            
+            <div class="stats-grid grid-3">
+                <div class="stat-card premium-card">
+                    <div class="card-tag mono">TOTAL_MISSIONS</div>
+                    <div class="stat-value" id="stat-missions">00</div>
+                    <div class="stat-progress"><div class="progress-bar" id="pb-missions" style="width: 0%;"></div></div>
+                </div>
+                <div class="stat-card premium-card highlight-card">
+                    <div class="card-tag mono">INTEL_POINTS</div>
+                    <div class="stat-value" id="stat-points">0</div>
+                    <span class="stat-trend" id="stat-rank">RANK: NOVICE</span>
+                </div>
+                <div class="stat-card premium-card">
+                    <div class="card-tag mono">SUCCESS_RATE</div>
+                    <div class="stat-value" id="stat-success">0%</div>
+                    <div class="stat-progress"><div class="progress-bar" id="pb-success" style="width: 0%;"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="performance-metrics grid-2">
+            <div class="metric-box premium-card">
+                <h3 class="mono">COMPETENCY_EVALUATION</h3>
+                <div class="radar-placeholder">
+                    <!-- High-tech competency chart visual -->
+                    <div class="radar-chart-visual">
+                        <div class="radar-line"></div>
+                        <div class="radar-point p1" id="radar-p1" style="display:none"></div>
+                        <div class="radar-point p2" id="radar-p2" style="display:none"></div>
+                        <div class="radar-point p3" id="radar-p3" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="legend grid-2">
+                    <div class="legend-item mono" id="leg-1">RECON_PRECISION: [LOW]</div>
+                    <div class="legend-item mono" id="leg-2">DECRYPTION: [LOW]</div>
+                    <div class="legend-item mono" id="leg-3">GEOLOCATION: [LOW]</div>
+                    <div class="legend-item mono" id="leg-4">BYPASS_SPEED: [LOW]</div>
+                </div>
+            </div>
+
+            <div class="mission-log premium-card">
+                <h3 class="mono">RECENT_MODULE_ACTIVITY</h3>
+                <ul class="activity-list mono" id="activity-log">
+                    <!-- Dynamic Log Items -->
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <div class="grid-lines"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const solved = JSON.parse(localStorage.getItem('solvedChallenges') || '[]');
+            const details = JSON.parse(localStorage.getItem('challengeDetails') || '{}');
+            const totalMissions = 5;
+            
+            // Update Stats
+            document.getElementById('stat-missions').innerText = sortedId(solved.length);
+            const missionsPercent = (solved.length / totalMissions) * 100;
+            document.getElementById('pb-missions').style.width = `${missionsPercent}%`;
+            
+            const totalPoints = Object.values(details).reduce((acc, d) => acc + (d.score || 0), 0);
+            document.getElementById('stat-points').innerText = totalPoints.toLocaleString();
+            
+            // Calculate Success Rate based on avg score
+            const avgScorePercent = solved.length > 0 ? (totalPoints / (solved.length * 1000) * 100).toFixed(0) : 0;
+            document.getElementById('stat-success').innerText = `${avgScorePercent}%`;
+            document.getElementById('pb-success').style.width = `${avgScorePercent}%`;
+            
+            // Dynamic Rank
+            const rankLabel = document.getElementById('stat-rank');
+            if (solved.length >= 5) rankLabel.innerText = 'RANK: ELITE_OPERATOR';
+            else if (solved.length >= 3) rankLabel.innerText = 'RANK: VETERAN';
+            else if (solved.length >= 1) rankLabel.innerText = 'RANK: RECON_AGENT';
+            
+            // Populate Activity Log
+            const logContainer = document.getElementById('activity-log');
+            const challengeNames = {
+                'module_01': 'SILENT_GUARDIAN',
+                'module_02': 'NEAR_PRESENCE',
+                'module_03': 'MIDNIGHT_DISRUPT',
+                'module_04': 'COLOSSEUM_RECON',
+                'module_05': 'COASTAL_BEACON'
+            };
+
+            function sortedId(n) { return n < 10 ? `0${n}` : n; }
+
+            if (solved.length === 0) {
+                logContainer.innerHTML = '<li><span class="status-pending">NO_ACTIVITY_DETECTED</span></li>';
+            } else {
+                logContainer.innerHTML = '';
+                solved.forEach(id => {
+                    const d = details[id] || { timeTaken: 0, score: 0, tier: 'C' };
+                    const mins = Math.floor(d.timeTaken / 60);
+                    const secs = d.timeTaken % 60;
+                    
+                    // Tier Colors
+                    const tierColors = { 'S': '#00f3ff', 'A': '#00ff88', 'B': '#ffcc00', 'C': '#ff4d4d' };
+                    const color = tierColors[d.tier] || '#fff';
+
+                    const li = document.createElement('li');
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.marginBottom = '1.2rem';
+                    li.style.alignItems = 'center';
+                    li.innerHTML = `
+                        <div>
+                            <span class="status-done">SOLVED</span> ${challengeNames[id] || id}
+                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem;">
+                                DURATION: ${mins}m ${secs}s // ACCURACY_SCORE: ${d.score}
+                            </div>
+                        </div>
+                        <div class="mono" style="color: ${color}; border: 1px solid ${color}; padding: 4px 10px; font-size: 1.2rem; font-weight: 700; background: ${color}11;">
+                            ${d.tier}
+                        </div>
+                    `;
+                    logContainer.appendChild(li);
+                });
+            }
+
+            // Radar Visuals
+            if (solved.length >= 1) { document.getElementById('radar-p1').style.display = 'block'; document.getElementById('leg-1').innerText = 'RECON_PRECISION: [HIGH]'; }
+            if (solved.length >= 3) { document.getElementById('radar-p2').style.display = 'block'; document.getElementById('leg-2').innerText = 'DECRYPTION: [HIGH]'; }
+            if (solved.length >= 5) { document.getElementById('radar-p3').style.display = 'block'; document.getElementById('leg-3').innerText = 'GEOLOCATION: [EXPERT]'; }
+        });
+
+        // Logout listener
+        document.getElementById('logout-trigger').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userRole');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
