@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Challenge Data & Flags ---
     const challengeFlags = [
-        { id: 'module_01', title: 'MISSION_01: INTEL_GATHERING', points: 500, flag: 'MIL_GAR_FAW_LDN_UK', desc: 'Identify the statue in the image and  determine its exact location (city and country).', hint: 'The flag is a sequence of airport codes and a city/country code.' },
-        { id: 'module_02', title: 'MISSION_02: HISTORICAL_ENIGMA', points: 750, flag: 'mahatma gandhi', desc: 'Sumbit the name of the Indian leader whose statue is situated near the identifed location.', hint: 'The flag is the name of a famous Indian leader, all lowercase.' },
-        { id: 'module_03', title: 'MISSION_03: TIME_LOCK', points: 1000, flag: '12 minutes', desc: 'Fireworks display was disrupted when a firework launched prematurely. how many minutes were left until midnight?', hint: 'The flag is a number followed by "minutes".' },
-        { id: 'module_04', title: 'MISSION_04: GEOSPATIAL_DECODE', points: 1250, flag: '6.9069n79.8689e', desc: 'Sumbit the latitude and longitude of the given stadium.', hint: 'The flag is latitude and longitude in decimal degrees, e.g., "XX.XXXXnYY.YYYYe".' },
-        { id: 'module_05', title: 'MISSION_05: PROTOCOL_BREACH', points: 1500, flag: 'phare_du_risban', desc: 'Using given image showing a coastline and lighthouse,identify the name  of the location?', hint: 'Check the sequence of port knocking in the logs. The flag is a specific lighthouse name.' },
+        { id: 'module_01', title: 'MISSION_01: STATUE IDENTIFICATION', points: 500, flag: 'Millicent Garrett Fawcett ( london, united kingdom)', desc: 'Identify the statue in the image and  determine its exact location (city and country).', hint: 'The flag is a sequence of airport codes and a city/country code.' },
+        { id: 'module_02', title: 'MISSION_02: FIND THE LEADER', points: 750, flag: 'mahatma gandhi', desc: 'Sumbit the name of the Indian leader whose statue is situated near the identifed location.', hint: 'The flag is the name of a famous Indian leader, all lowercase.' },
+        { id: 'module_03', title: 'MISSION_03: TIME', points: 1000, flag: '12 minutes', desc: 'Fireworks display was disrupted when a firework launched prematurely. how many minutes were left until midnight?', hint: 'The flag is a number followed by "minutes".' },
+        { id: 'module_04', title: 'MISSION_04: INVESTIGATE', points: 1250, flag: '6.9069n79.8689e', desc: 'Sumbit the latitude and longitude of the given stadium.', hint: 'The flag is latitude and longitude in decimal degrees, e.g., "XX.XXXXnYY.YYYYe".' },
+        { id: 'module_05', title: 'MISSION_05: LIGHTHOUSE', points: 1500, flag: 'phare_du_risban', desc: 'Using given image showing a coastline and lighthouse,identify the name  of the location?', hint: 'Check the sequence of port knocking in the logs. The flag is a specific lighthouse name.' },
         { id: 'module_06', title: 'MISSION_06: SYSTEM_ROOT', points: 2500, flag: 'FLAG{Kgisl@OSINT_MASTER}', desc: 'THE FINAL CHALLENGE. This mission unlocks ONLY when all previous sectors are secured. Access the root of the event network.', hint: 'The flag is the event password followed by OSINT_MASTER.' }
     ];
 
