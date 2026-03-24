@@ -482,11 +482,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const normEntered = normalize(enteredFlag);
 
         const checks = {
-            'module_01': () => normEntered === normalize("Millicent Garrett Fawcett and (london, unitedkindom)"),
-            'module_02': () => normEntered === normalize("mahatma gadhi") || normEntered === normalize("mahatma gandhi"),
-            'module_03': () => ["12minutes", "12mins", "12"].includes(normEntered),
-            'module_04': () => normEntered.includes("6.9069") && normEntered.includes("79.8689"),
-            'module_05': () => normEntered === normalize("phare du risbon") || normEntered === normalize("phare du risban")
+            'module_01': () => normEntered.includes('millicent') && normEntered.includes('london'),
+            'module_02': () => normEntered.includes('mahatma') && (normEntered.includes('gadhi') || normEntered.includes('gandhi')),
+            'module_03': () => normEntered.includes('12'),
+            'module_04': () => normEntered.includes('69069') && normEntered.includes('798689'),
+            'module_05': () => normEntered.includes('phare') && (normEntered.includes('risbon') || normEntered.includes('risban'))
         };
 
         if (checks[challengeId] && checks[challengeId]()) isCorrect = true;
