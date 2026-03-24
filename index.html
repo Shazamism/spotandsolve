@@ -44,30 +44,22 @@
         <div class="auth-box">
             <h2 class="mono">SYSTEM_ACCESS_REQUIRED</h2>
             <div class="auth-modes">
-                <button class="auth-tab active" data-mode="login" data-role="player">PLAYER_LOGIN</button>
-                <button class="auth-tab" data-mode="login" data-role="admin">ADMIN_LOGIN</button>
-                <button class="auth-tab" data-mode="register" data-role="player">CREATE_ACCOUNT</button>
+                <button class="auth-tab active" data-mode="login">PLAYER_LOGIN</button>
+                <button class="auth-tab" data-mode="admin">ADMIN_LOGIN</button>
             </div>
+
             <div class="auth-form">
                 <div class="input-group">
                     <label class="mono">IDENTIFIER</label>
-                    <input type="text" placeholder="GHOST_OPERATOR_08" id="auth-id">
+                    <input type="text" id="auth-id" placeholder="operator_name">
                 </div>
                 <div class="input-group">
                     <label class="mono">SECURE_TOKEN</label>
-                    <input type="password" placeholder="********" id="auth-token">
+                    <input type="password" id="auth-token" placeholder="********">
                 </div>
-                <!-- Registration Only Fields -->
-                <div class="input-group reg-only">
-                    <label class="mono">GMAIL_ADDRESS</label>
-                    <input type="email" placeholder="operator@gmail.com" id="auth-gmail">
+                <div id="auth-feedback" class="mono" style="font-size: 0.7rem; color: #ff4d4d; margin-bottom: 1rem;">
                 </div>
-                <div class="input-group reg-only">
-                    <label class="mono">PHONE_IDENTIFIER</label>
-                    <input type="tel" placeholder="+1234567890" id="auth-phone">
-                </div>
-                <div id="auth-feedback" class="mono" style="color: #ff4d4d; margin-bottom: 1rem; font-size: 0.8rem; min-height: 1.2rem;"></div>
-                <button class="btn btn-primary btn-block" id="login-trigger">AUTHORIZE_ACCESS</button>
+                <button id="login-trigger" class="btn btn-primary btn-full">AUTHORIZE_ACCESS</button>
             </div>
         </div>
     </div>
@@ -77,12 +69,17 @@
         <div class="briefing-box">
             <h2 class="mono highlight">MODULE_BRIEFING: PROJECT_SPOT_&_SOLVE</h2>
             <div class="briefing-content mono">
-                <p>> INITIATING RECONNAISSANCE PROTOCOLS...</p>
-                <p>> OBJECTIVE: IDENTIFY GEOGRAPHICAL ORIGIN OF TARGET ASSETS.</p>
-                <p>> PROTOCOL 01: ANALYZE ARCHITECTURAL MARKERS AND SHADOW PATTERNS.</p>
-                <p>> PROTOCOL 02: DECODE SIGNAGE AND REFLECTIVE DATA POINTS.</p>
-                <p>> PROTOCOL 03: TRIANGULATE COORDINATES WITH < 10M MARGIN OF ERROR.</p>
-                        <p>> WARNING: OPSEC IS PARAMOUNT. DO NOT LEAVE DIGITAL TRACES.</p>
+                <p>> INSTRUCTIONS....
+                <p>
+                <p>> Observe the Image Carefully – Look at all visual clues such as buildings, language, environment,
+                    shadows, and landmarks.</p>
+                <p>> Use Open-Source Tools – Participants can use Google, search engines, AI tools, maps, and other
+                    publicly available resources to investigate the image.</p>
+                <p>> Identify the Answers – Find the location (country / city / place), time of day, and landmark shown
+                    in the image.</p>
+                <p>> Verify the Answer – Once you find the answer using open-source tools, confirm it using Google Maps
+                    with Street View.</p>
+                <p>> Follow the Rules – This is an individual event, and the total time for the game is 25 minutes.</p>
             </div>
             <button class="btn btn-glow btn-block" id="start-mission-trigger">ACKNOWLEDGE & PROCEED</button>
         </div>
@@ -113,7 +110,7 @@
                         <span class="mono">ATTACHED_ASSET.PNG</span>
                         <a href="#" id="modal-download" download class="btn btn-primary">DOWNLOAD_INTEL</a>
                     </div>
-                    
+
                     <div class="flag-submission">
                         <label class="mono">SUBMIT_TARGET_FLAG</label>
                         <div class="input-row">
@@ -121,6 +118,9 @@
                             <button class="btn btn-glow" id="submit-flag">SUBMIT</button>
                         </div>
                         <div id="flag-feedback" class="mono"></div>
+                        <button class="btn-text" id="request-hint"
+                            style="color: var(--accent-secondary); margin-top: 1rem; width: 100%; border: 1px dashed var(--accent-secondary); padding: 5px;">REQUEST_HINT
+                            [-100_PTS]</button>
                     </div>
                 </div>
             </div>
@@ -212,7 +212,7 @@
                         <span class="category">BERLIN_INTEL</span>
                     </div>
                     <div class="card-body">
-                        <h4>Sovereign Signal</h4>
+                        <h4>statue identification</h4>
                     </div>
                     <div class="card-footer">
                         <button class="btn-text">ACCESS_INTEL →</button>
@@ -228,7 +228,7 @@
                         <span class="category">TOKYO_RECON</span>
                     </div>
                     <div class="card-body">
-                        <h4>Neon Reflex</h4>
+                        <h4>find the leader</h4>
                     </div>
                     <div class="card-footer">
                         <button class="btn-text">ACCESS_INTEL →</button>
@@ -244,7 +244,7 @@
                         <span class="category">LONDON_GRID</span>
                     </div>
                     <div class="card-body">
-                        <h4>Timeless Trace</h4>
+                        <h4>Time</h4>
                     </div>
                     <div class="card-footer">
                         <button class="btn-text">ACCESS_INTEL →</button>
@@ -253,14 +253,13 @@
 
                 <!-- Module 04 -->
                 <div class="challenge-card" data-id="module_04" data-title="The Colosseum Recon" data-diff="MEDIUM"
-                    data-desc="Submit the latitude and longitude of the given stadium."
-                    data-img="chal_4.intel">
+                    data-desc="Submit the latitude and longitude of the given stadium." data-img="chal_4.intel">
                     <div class="card-header">
                         <span class="difficulty">MODULE_04</span>
                         <span class="category">PARIS_SECTOR</span>
                     </div>
                     <div class="card-body">
-                        <h4>Gilded Street</h4>
+                        <h4>investigate</h4>
                     </div>
                     <div class="card-footer">
                         <button class="btn-text">ACCESS_INTEL →</button>
@@ -276,7 +275,7 @@
                         <span class="category">NYC_ELEVATION</span>
                     </div>
                     <div class="card-body">
-                        <h4>Vertical Horizon</h4>
+                        <h4>light house</h4>
                     </div>
                     <div class="card-footer">
                         <button class="btn-text">ACCESS_INTEL →</button>
@@ -297,10 +296,30 @@
         </footer>
     </main>
 
+    <!-- New: Global Broadcast Alert -->
+    <div id="broadcast-alert" class="broadcast-overlay hidden">
+        <div class="alert-content">
+            <span class="alert-tag">PRIORITY_MESSAGE_FROM_HQ</span>
+            <p id="alert-text"></p>
+            <div class="alert-timer">DISMISSING_IN_5S...</div>
+        </div>
+    </div>
+
+    <!-- New: Live Activity Feed -->
+    <div id="activity-feed-panel" class="feed-sidebar collapsed">
+        <div class="feed-header mono">
+            LIVE_OPERATIONAL_LOG <button id="toggle-feed">»</button>
+        </div>
+        <div id="feed-container" class="feed-scroll">
+            <div class="feed-item">[SYSTEM] AUTH_LINK_READY</div>
+        </div>
+    </div>
+
     <!-- Firebase Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 
+    <script src="assets.js"></script>
     <script src="main.js"></script>
 </body>
 

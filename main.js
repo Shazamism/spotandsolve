@@ -42,13 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Challenge Data & Flags ---
-    const challengeFlags = {
-        'module_01': 'MIL_GAR_FAW_LDN_UK', 
-        'module_02': 'mahatma gadhi',
-        'module_03': '12 minutes',
-        'module_04': '6.9069n79.8689e',
-        'module_05': 'phare_du_risban'
-    };
+    const challengeFlags = [
+        { id: 'module_01', title: 'MISSION_01: INTEL_GATHERING', points: 500, flag: 'MIL_GAR_FAW_LDN_UK', desc: 'Locate the coordinates of the initial intel drop point.', hint: 'The flag is a sequence of airport codes and a city/country code.' },
+        { id: 'module_02', title: 'MISSION_02: HISTORICAL_ENIGMA', points: 750, flag: 'mahatma gadhi', desc: 'Uncover the name of the historical figure associated with the next clue.', hint: 'The flag is the name of a famous Indian leader, all lowercase.' },
+        { id: 'module_03', title: 'MISSION_03: TIME_LOCK', points: 1000, flag: '12 minutes', desc: 'Determine the exact duration of the critical data transfer.', hint: 'The flag is a number followed by "minutes".' },
+        { id: 'module_04', title: 'MISSION_04: GEOSPATIAL_DECODE', points: 1250, flag: '6.9069n79.8689e', desc: 'Pinpoint the precise geographical coordinates of the hidden server farm.', hint: 'The flag is latitude and longitude in decimal degrees, e.g., "XX.XXXXnYY.YYYYe".' },
+        { id: 'module_05', title: 'MISSION_05: PROTOCOL_BREACH', points: 1500, flag: 'phare_du_risban', desc: 'Analyze the network handshake for the master key.', hint: 'Check the sequence of port knocking in the logs. The flag is a specific lighthouse name.' },
+        { id: 'module_06', title: 'MISSION_06: SYSTEM_ROOT', points: 2500, flag: 'FLAG{Kgisl@OSINT_MASTER}', desc: 'THE FINAL CHALLENGE. This mission unlocks ONLY when all previous sectors are secured. Access the root of the event network.', hint: 'The flag is the event password followed by OSINT_MASTER.' }
+    ];
 
     // --- Session & Timer State ---
     let startTime = null;
@@ -221,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Auth Logic ---
     const loginTriggerBtn = document.getElementById('login-trigger');
     const authFeedback = document.getElementById('auth-feedback');
+    const STATIC_PASSWORD = "Kgisl@12345";
     
     if (loginTriggerBtn) {
         loginTriggerBtn.addEventListener('click', () => {
@@ -229,91 +231,81 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const username = document.getElementById('auth-id')?.value.trim();
             const password = document.getElementById('auth-token')?.value.trim();
-            const gmail = document.getElementById('auth-gmail')?.value.trim();
-            const phone = document.getElementById('auth-phone')?.value.trim();
             
             if (authFeedback) authFeedback.innerText = '';
 
-            if (mode === 'register') {
-                if (!username || !password || !gmail || !phone) {
-                    if (authFeedback) authFeedback.innerText = 'ERROR: ALL_FIELDS_REQUIRED';
-                    return;
-                }
-                
-                db.ref(`users/${username}`).once('value').then((snapshot) => {
-                    if (snapshot.exists()) {
-                        if (authFeedback) authFeedback.innerText = 'ERROR: USERNAME_EXISTS';
-                        return;
+            if (!username || !password) {
+                if (authFeedback) authFeedback.innerText = 'ERROR: ALL_FIELDS_REQUIRED';
+                return;
+            }
+
+            // --- Special Admin Login ---
+            if (mode === 'admin') {
+                db.ref(`users/${username}`).once('value').then(snapshot => {
+                    const user = snapshot.val();
+                    if (user && user.role === 'admin' && user.password === password) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userRole', 'admin');
+                        localStorage.setItem('currentUsername', username);
+                        window.location.href = 'admin.html';
+                    } else {
+                        if (authFeedback) authFeedback.innerText = 'ERROR: INVALID_ADMIN_CREDENTIALS';
                     }
-                    
-                    db.ref(`users/${username}`).set({
-                        password, email: gmail, phone, role: 'player',
-                        solvedChallenges: [], challengeDetails: {}, totalPoints: 0,
-                        status: 'ACTIVE', lastActive: new Date().toISOString()
-                    }).then(() => {
-                        if (authFeedback) {
-                            authFeedback.innerText = 'SUCCESS: ACCOUNT_CREATED';
-                            authFeedback.style.color = 'var(--accent-secondary)';
-                        }
-                        document.querySelector('.auth-tab[data-mode="login"]')?.click();
-                    }).catch(err => {
-                        console.error("REG_SET_ERROR:", err);
-                        if (authFeedback) {
-                            authFeedback.style.color = '#ff4d4d';
-                            authFeedback.innerText = `REG_ERROR: ${err.code || 'PERMISSION_DENIED'}`;
-                        }
-                    });
                 }).catch(err => {
-                    console.error("REG_CHECK_ERROR:", err);
-                    if (authFeedback) {
-                        authFeedback.style.color = '#ff4d4d';
-                        authFeedback.innerText = `DB_ERROR: ${err.code || 'PERMISSION_DENIED'}`;
-                    }
+                    if (authFeedback) authFeedback.innerText = 'DB_ERROR: ' + err.code;
                 });
                 return;
             }
 
-            // Login
+            // --- Player Login (Static Password with Auto-Creation) ---
+            if (password !== STATIC_PASSWORD) {
+                if (authFeedback) authFeedback.innerText = 'ERROR: INVALID_ACCESS_TOKEN';
+                return;
+            }
+
             db.ref(`users/${username}`).once('value').then(snapshot => {
-                if (!snapshot.exists() || snapshot.val().password !== password) {
+                const proceedToLogin = (userData) => {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userRole', 'player');
+                    localStorage.setItem('currentUsername', username);
+                    
                     if (authFeedback) {
-                        authFeedback.style.color = '#ff4d4d';
-                        authFeedback.innerText = 'ERROR: INVALID_CREDENTIALS';
+                        authFeedback.style.color = 'var(--accent-secondary)';
+                        authFeedback.innerText = 'SUCCESS: AUTH_GRANTED';
                     }
-                    return;
-                }
 
-                const user = snapshot.val();
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', user.role);
-                localStorage.setItem('currentUsername', username);
-                
-                if (authFeedback) {
-                    authFeedback.style.color = 'var(--accent-secondary)';
-                    authFeedback.innerText = 'SUCCESS: AUTH_GRANTED';
-                }
-
-                if (loginOverlay) loginOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    if (loginOverlay) {
-                        loginOverlay.style.display = 'none';
-                        loginOverlay.classList.add('hidden');
-                    }
-                    if (user.role === 'admin') window.location.href = 'admin.html';
-                    else {
+                    if (loginOverlay) loginOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        if (loginOverlay) {
+                            loginOverlay.style.display = 'none';
+                            loginOverlay.classList.add('hidden');
+                        }
                         instrOverlay?.classList.remove('hidden');
                         syncUserDataLocally();
-                    }
-                }, 800);
-            }).catch(err => {
-                console.error("LOGIN_ERROR:", err);
-                if (authFeedback) {
-                    authFeedback.style.color = '#ff4d4d';
-                    authFeedback.innerText = `ERROR: ${err.code || 'CONNECTION_FAILED'}`;
-                    if (err.code === 'PERMISSION_DENIED') {
-                        authFeedback.innerText += " - CHECK_FIREBASE_RULES";
-                    }
+                    }, 800);
+                };
+
+                if (snapshot.exists()) {
+                    proceedToLogin(snapshot.val());
+                } else {
+                    // Auto-create user
+                    const newUser = {
+                        password: STATIC_PASSWORD,
+                        role: 'player',
+                        solvedChallenges: [],
+                        challengeDetails: {},
+                        totalPoints: 0,
+                        status: 'ACTIVE',
+                        lastActive: new Date().toISOString()
+                    };
+                    db.ref(`users/${username}`).set(newUser).then(() => {
+                        proceedToLogin(newUser);
+                    }).catch(err => {
+                        if (authFeedback) authFeedback.innerText = 'ERROR_AUTO_CREATE: ' + err.code;
+                    });
                 }
+            }).catch(err => {
+                if (authFeedback) authFeedback.innerText = 'CONNECTION_ERROR: ' + err.code;
             });
         });
     }
@@ -387,7 +379,23 @@ document.addEventListener('DOMContentLoaded', () => {
             modalTitle.innerText = data.title;
             modalDesc.innerText = data.desc;
             modalDiff.innerText = data.diff;
-            modalDownload.dataset.file = data.img;
+            modalDownload.href = '#';
+            modalDownload.onclick = (e) => {
+                e.preventDefault();
+                const base64Data = window.INTEL_ASSETS ? window.INTEL_ASSETS[data.img] : null;
+
+                if (base64Data) {
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = base64Data;
+                    a.download = data.img.replace('.intel', '.jpg');
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    alert("INTEL_DOWNLOAD_ERROR: Asset not found in bundle.");
+                }
+            };
             modal.dataset.currentId = data.id;
 
             if(flagInput) flagInput.value = '';
@@ -420,6 +428,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 timerDisplay.innerText = 'TIME_ELAPSED: 00:00';
             }
 
+            modal.dataset.currentId = data.id; // Correctly track the current challenge for hints
+            const challData = challengeFlags.find(c => c.id === data.id);
+            if (challData) {
+                modalTitle.innerText = challData.title;
+                modalDesc.innerText = challData.desc;
+            }
+            
             modal.classList.remove('hidden');
             modal.style.display = 'flex';
         });
@@ -523,6 +538,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btn = card.querySelector('.btn-text');
                 if(btn) btn.innerText = 'MISSION_COMPLETE ✓';
             }
+            
+            // Special logic for Module 6
+            if (card.dataset.id === 'module-6') {
+                const required = ['module-1', 'module-2', 'module-3', 'module-4', 'module-5'];
+                const allDone = required.every(id => solved.includes(id));
+                if (allDone) {
+                    card.classList.remove('hidden-locked');
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    card.classList.add('hidden-locked');
+                    card.style.opacity = '0.3';
+                    card.style.pointerEvents = 'none';
+                    const btn = card.querySelector('.btn-text');
+                    if(btn) btn.innerText = 'LOCKED: SECURE_PREVIOUS_SECTORS';
+                }
+            }
         });
     }
 
@@ -548,20 +580,207 @@ document.addEventListener('DOMContentLoaded', () => {
             userList.sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0));
             leaderboardBody.innerHTML = userList.map((user, index) => {
                 const rank = index + 1;
+                const badges = [];
+                if (user.totalPoints >= 3000) badges.push('💎 ELITE');
+                if (user.solvedChallenges?.length >= 5) badges.push('🏆 COMPLETIONIST');
+                if (user.totalPoints > 0 && user.totalPoints < 500) badges.push('🔰 ROOKIE');
+                
                 const level = user.totalPoints > 3000 ? 'ELITE' : (user.totalPoints > 1500 ? 'VETERAN' : 'RECON');
                 return `<tr>
                     <td class="${rank <= 3 ? ['rank-gold','rank-silver','rank-bronze'][rank-1] : ''}">#${rank.toString().padStart(2, '0')}</td>
-                    <td class="mono">${user.username}</td>
+                    <td class="mono">${user.username} <div class="badge-list">${badges.join(' ')}</div></td>
                     <td>${level}</td>
                     <td>${(user.solvedChallenges?.length || 0)}/05</td>
                     <td>${user.totalPoints || 0}</td>
                     <td><span class="tag-online">ACTIVE</span></td>
+                    <td><button class="btn-delete" data-username="${user.username}">REMOVE</button></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="6">NO_OPERATOR_DATA</td></tr>';
+            }).join('') || '<tr><td colspan="7">NO_OPERATOR_DATA</td></tr>';
         }
     }
 
-    // Export & Monitoring
+    // --- Hint System Logic ---
+    const hintBtn = document.getElementById('request-hint');
+    if (hintBtn) {
+        hintBtn.addEventListener('click', () => {
+            const currentChallengeId = modal.dataset.currentId; // Assuming modal.dataset.currentId holds the current challenge ID
+            const challData = challengeFlags.find(c => c.id === currentChallengeId);
+            if (!challData) {
+                alert("ERROR: Challenge data not found for hint.");
+                return;
+            }
+
+            if (confirm(`DECRYPT_HINT: This will deduct 100 points. Proceed?`)) {
+                const username = localStorage.getItem('currentUsername');
+                if (!username) {
+                    alert("ERROR: User not logged in.");
+                    return;
+                }
+
+                db.ref(`users/${username}`).once('value').then(snapshot => {
+                    const data = snapshot.val();
+                    const currentPoints = data.totalPoints || 0;
+                    
+                    // Check if hint has already been requested for this challenge
+                    const requestedHints = data.requestedHints || {};
+                    if (requestedHints[currentChallengeId]) {
+                        alert("HINT_ALREADY_DECRYPTED: " + (challData.hint || "Search for hidden metadata in the provided image."));
+                        return;
+                    }
+
+                    const newPoints = Math.max(0, currentPoints - 100);
+                    requestedHints[currentChallengeId] = true; // Mark hint as requested
+
+                    db.ref(`users/${username}`).update({
+                        totalPoints: newPoints,
+                        requestedHints: requestedHints
+                    }).then(() => {
+                        alert("HINT_DECRYPTED: " + (challData.hint || "Search for hidden metadata in the provided image."));
+                        pushToFeed(`OPERATOR ${username} REQUESTED A HINT FOR ${challData.title}`);
+                    }).catch(err => {
+                        alert("HINT_DEDUCTION_FAILED: " + err.message);
+                    });
+                });
+            }
+        });
+    }
+
+    // --- User Management Logic ---
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-delete')) {
+            const username = e.target.getAttribute('data-username');
+            if (confirm(`CRITICAL_ACTION: Are you sure you want to PERMANENTLY REMOVE operator [${username}]?`)) {
+                db.ref(`users/${username}`).remove().then(() => {
+                    console.log(`USER_REMOVED: ${username}`);
+                    // UI will auto-refresh due to onValue listener
+                    const modalInpector = document.getElementById('data-preview-modal');
+                    if (modalInpector && !modalInpector.classList.contains('hidden')) {
+                        openDataPreview(); // Manually refresh inspector if open
+                    }
+                }).catch(err => alert("DELETE_FAILED: " + err.message));
+            }
+        }
+    });
+
+    // --- Global Broadcast System ---
+    const sendBtn = document.getElementById('send-broadcast');
+    const clearBtn = document.getElementById('clear-broadcast');
+    const broadcastInput = document.getElementById('broadcast-msg');
+    const sessionStartTime = Date.now();
+
+    if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+            const msg = broadcastInput.value.trim();
+            if (msg) {
+                db.ref('broadcast').set({
+                    message: msg,
+                    sender: localStorage.getItem('currentUsername') || 'HQ',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                }).then(() => {
+                    broadcastInput.value = '';
+                    console.log("BROADCAST_SENT");
+                });
+            }
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            db.ref('broadcast').remove();
+        });
+    }
+
+    // Listener for players
+    db.ref('broadcast').on('value', (snapshot) => {
+        const data = snapshot.val();
+        const alertOverlay = document.getElementById('broadcast-alert');
+        const alertText = document.getElementById('alert-text');
+        
+        // Only show if the message is new (sent after this session started)
+        if (data && data.message && data.timestamp > sessionStartTime) {
+            if (alertOverlay && alertText) {
+                alertText.innerText = data.message;
+                alertOverlay.classList.remove('hidden');
+                // Auto-dismiss after 8 seconds
+                setTimeout(() => alertOverlay.classList.add('hidden'), 8000);
+            }
+        }
+    });
+
+    // --- Live Activity Feed ---
+    const feedContainer = document.getElementById('feed-container');
+    const toggleFeedBtn = document.getElementById('toggle-feed');
+    const feedPanel = document.getElementById('activity-feed-panel');
+
+    if (feedContainer) feedContainer.innerHTML = '<div class="feed-item">[SYSTEM] CONNECTING_TO_INTEL_STREAM...</div>';
+
+    if (toggleFeedBtn) {
+        toggleFeedBtn.addEventListener('click', () => {
+            feedPanel?.classList.toggle('collapsed');
+            toggleFeedBtn.innerText = feedPanel?.classList.contains('collapsed') ? '«' : '»';
+        });
+    }
+
+    function pushToFeed(msg) {
+        db.ref('feed').push({
+            log: msg,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    }
+
+    db.ref('feed').limitToLast(15).on('value', (snapshot) => {
+        if (feedContainer) {
+            const items = [];
+            snapshot.forEach(child => {
+                const data = child.val();
+                items.unshift(`<div class="feed-item"><span class="accent">[${new Date(data.timestamp).toLocaleTimeString()}]</span> ${data.log}</div>`);
+            });
+            feedContainer.innerHTML = items.join('') || '<div class="feed-item">[SYSTEM] NO_RECENT_ACTIVITY</div>';
+        }
+    });
+
+    // --- Tactical Map Pings ---
+    function updateTacticalMap(users) {
+        const map = document.getElementById('tactical-map');
+        if (!map) return;
+        
+        // Clear old pings
+        map.querySelectorAll('.ping').forEach(p => p.remove());
+        
+        users.forEach(user => {
+            const ping = document.createElement('div');
+            ping.className = 'ping';
+            
+            // Generate pseudo-random but stable position based on username
+            let hash = 0;
+            for (let i = 0; i < user.username.length; i++) hash = user.username.charCodeAt(i) + ((hash << 5) - hash);
+            const x = Math.abs(hash % 80) + 10; // 10% to 90%
+            const y = Math.abs((hash >> 8) % 60) + 20; // 20% to 80%
+            
+            ping.style.left = x + '%';
+            ping.style.top = y + '%';
+            ping.title = `OPERATOR: ${user.username}`;
+            map.appendChild(ping);
+        });
+    }
+
+    // Initialize map update in the admin render
+    const originalRenderAdmin = renderAdminDashboard;
+    renderAdminDashboard = function(userList) {
+        originalRenderAdmin(userList);
+        updateTacticalMap(userList);
+    };
+
+    // Integrate feed push in challenge completion
+    const originalShowResult = showResult;
+    window.showResult = function(isCorrect, points) {
+        originalShowResult(isCorrect, points);
+        if (isCorrect) {
+            const currentChallenge = challenges[currentChallengeIndex];
+            const username = localStorage.getItem('currentUsername');
+            pushToFeed(`OPERATOR ${username} COMPLETED ${currentChallenge.title}`);
+        }
+    };
     document.getElementById('download-excel')?.addEventListener('click', () => {
         db.ref('users').once('value').then(snapshot => {
             const usersData = snapshot.val() || {};
@@ -569,8 +788,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 username, ...usersData[username]
             })).filter(u => u.role !== 'admin');
 
-            const headers = ["IDENTIFIER", "GMAIL", "PHONE", "SOLVED_COUNT", "POINTS", "LAST_ACTIVE"];
-            const rows = userList.map(u => [u.username, u.email || 'N/A', u.phone || 'N/A', (u.solvedChallenges?.length || 0), u.totalPoints || 0, u.lastActive]);
+            const headers = ["IDENTIFIER", "POINTS", "MISSIONS", "LAST_ACTIVE"];
+            const rows = userList.map(u => [u.username, u.totalPoints || 0, (u.solvedChallenges?.length || 0), u.lastActive]);
             let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csvContent));
@@ -592,7 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userList = Object.keys(usersData).map(username => ({ username, ...usersData[username] })).filter(u => u.role !== 'admin');
             
             const head = document.getElementById('preview-headers');
-            if (head) head.innerHTML = ["ID", "EMAIL", "PHONE", "MISSIONS", "POINTS"].map(h => `<th>${h}</th>`).join('');
+            if (head) head.innerHTML = ["ID", "EMAIL", "PHONE", "MISSIONS", "POINTS", "ACTION"].map(h => `<th>${h}</th>`).join('');
             
             const body = document.getElementById('preview-body');
             if (body) body.innerHTML = userList.map(u => `<tr>
@@ -601,7 +820,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${u.phone || '---'}</td>
                 <td>${u.solvedChallenges?.length || 0}</td>
                 <td>${u.totalPoints || 0}</td>
-            </tr>`).join('') || '<tr><td colspan="5">NO_DATA</td></tr>';
+                <td><button class="btn-delete" data-username="${u.username}">DELETE</button></td>
+            </tr>`).join('') || '<tr><td colspan="6">NO_DATA</td></tr>';
             
             document.getElementById('data-preview-modal')?.classList.remove('hidden');
         });

@@ -28,6 +28,7 @@
                 <button id="download-excel" class="btn btn-primary">DOWNLOAD_OPERATOR_LOG</button>
                 <a href="#" id="examine-data" class="mono highlight" style="margin-left: 1rem; font-size: 0.8rem;">[EXAMINE_DATA_SOURCE]</a>
             </div>
+            </div>
             <div class="stats-overview grid-3">
                 <div class="stat-card">
                     <span class="stat-label">ACTIVE_OPERATORS</span>
@@ -40,6 +41,25 @@
                 <div class="stat-card">
                     <span class="stat-label">SECURITY_THREATS</span>
                     <span class="stat-value" id="stat-security-threats">0</span>
+                </div>
+            </div>
+
+            <!-- New: Global Broadcast -->
+            <div class="broadcast-control-panel card-tactical">
+                <h3 class="mono">SATELLITE_COMM_LINK // GLOBAL_BROADCAST</h3>
+                <div class="flex-row">
+                    <input type="text" id="broadcast-msg" placeholder="ENTER_PRIORITY_MESSAGE...">
+                    <button id="send-broadcast" class="btn btn-primary">TRANSMIT</button>
+                    <button id="clear-broadcast" class="btn-text">CLEAR</button>
+                </div>
+            </div>
+
+            <!-- New: Tactical Map -->
+            <div class="tactical-map-container card-tactical">
+                <h3 class="mono">GLOBAL_DEPLOYMENT_GRID // LIVE_PINGS</h3>
+                <div id="tactical-map" class="map-box">
+                    <div class="map-overlay"></div>
+                    <!-- Pings will be injected here -->
                 </div>
             </div>
         </section>
@@ -55,6 +75,7 @@
                         <th>MISSIONS</th>
                         <th>INTEL_POINTS</th>
                         <th>STATUS</th>
+                        <th>ACTION</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboard-body">
