@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("FIREBASE_INIT: CONNECTION_SUCCESSFUL");
             if (!snapshot.exists()) {
                 db.ref('users/admin').set({
-                    password: 'admin123',
+                    password: 'zenithadmin123',
                     role: 'admin',
                     solvedChallenges: [],
                     challengeDetails: {},
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startTitleReveal() {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@!&*";
-        const titleText = title.innerText;
+        const titleText = title.getAttribute('data-text') || "SPOT AND SOLVE";
         let iteration = 0;
 
         const interval = setInterval(() => {
@@ -183,10 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(interval);
                 return;
             }
-            title.innerText = title.innerText.split("")
+            title.innerText = titleText.split("")
                 .map((char, index) => {
                     if (index < iteration) return titleText[index];
-                    return chars[Math.floor(Math.random() * 26)];
+                    return chars[Math.floor(Math.random() * chars.length)];
                 })
                 .join("");
 
@@ -482,8 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const normEntered = normalize(enteredFlag);
 
         const checks = {
-            'module_01': () => normEntered.includes('millicent') && normEntered.includes('london'),
-            'module_02': () => normEntered.includes('mahatma') && (normEntered.includes('gadhi') || normEntered.includes('gandhi')),
+            'module_01': () => normEntered.includes('millicentgarrettfawcett') && normEntered.includes('london'),
+            'module_02': () => normEntered.includes('mahatma') && (normEntered.includes('gandhi') || normEntered.includes('gadhi')),
             'module_03': () => normEntered.includes('12'),
             'module_04': () => normEntered.includes('69069') && normEntered.includes('798689'),
             'module_05': () => normEntered.includes('phare') && (normEntered.includes('risbon') || normEntered.includes('risban'))
