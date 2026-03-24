@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const flagFeedback = document.getElementById('flag-feedback');
 
     // --- Error Handling Failsafe ---
-    window.onerror = function(msg, url, line) {
+    window.onerror = function (msg, url, line) {
         console.error("GLOBAL_FAULT_DETECTED:", msg, "at", url, ":", line);
         // FORCE DISMISS INTRO IF STUCK
         if (cred1 && cred1.style.display !== 'none') {
@@ -37,17 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function dismissIntroForce() {
-        [cred1, cred2, introOverlay].forEach(el => { if(el) { el.style.opacity = '0'; setTimeout(() => el.style.display='none', 800); }});
+        [cred1, cred2, introOverlay].forEach(el => { if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 800); } });
         if (loginOverlay) loginOverlay.classList.remove('hidden');
     }
 
     // --- Challenge Data & Flags ---
     const challengeFlags = [
-        { id: 'module_01', title: 'MISSION_01: INTEL_GATHERING', points: 500, flag: 'MIL_GAR_FAW_LDN_UK', desc: 'Locate the coordinates of the initial intel drop point.', hint: 'The flag is a sequence of airport codes and a city/country code.' },
-        { id: 'module_02', title: 'MISSION_02: HISTORICAL_ENIGMA', points: 750, flag: 'mahatma gadhi', desc: 'Uncover the name of the historical figure associated with the next clue.', hint: 'The flag is the name of a famous Indian leader, all lowercase.' },
-        { id: 'module_03', title: 'MISSION_03: TIME_LOCK', points: 1000, flag: '12 minutes', desc: 'Determine the exact duration of the critical data transfer.', hint: 'The flag is a number followed by "minutes".' },
-        { id: 'module_04', title: 'MISSION_04: GEOSPATIAL_DECODE', points: 1250, flag: '6.9069n79.8689e', desc: 'Pinpoint the precise geographical coordinates of the hidden server farm.', hint: 'The flag is latitude and longitude in decimal degrees, e.g., "XX.XXXXnYY.YYYYe".' },
-        { id: 'module_05', title: 'MISSION_05: PROTOCOL_BREACH', points: 1500, flag: 'phare_du_risban', desc: 'Analyze the network handshake for the master key.', hint: 'Check the sequence of port knocking in the logs. The flag is a specific lighthouse name.' },
+        { id: 'module_01', title: 'MISSION_01: INTEL_GATHERING', points: 500, flag: 'MIL_GAR_FAW_LDN_UK', desc: 'Identify the statue in the image and  determine its exact location (city and country).', hint: 'The flag is a sequence of airport codes and a city/country code.' },
+        { id: 'module_02', title: 'MISSION_02: HISTORICAL_ENIGMA', points: 750, flag: 'mahatma gandhi', desc: 'Sumbit the name of the Indian leader whose statue is situated near the identifed location.', hint: 'The flag is the name of a famous Indian leader, all lowercase.' },
+        { id: 'module_03', title: 'MISSION_03: TIME_LOCK', points: 1000, flag: '12 minutes', desc: 'Fireworks display was disrupted when a firework launched prematurely. how many minutes were left until midnight?', hint: 'The flag is a number followed by "minutes".' },
+        { id: 'module_04', title: 'MISSION_04: GEOSPATIAL_DECODE', points: 1250, flag: '6.9069n79.8689e', desc: 'Sumbit the latitude and longitude of the given stadium.', hint: 'The flag is latitude and longitude in decimal degrees, e.g., "XX.XXXXnYY.YYYYe".' },
+        { id: 'module_05', title: 'MISSION_05: PROTOCOL_BREACH', points: 1500, flag: 'phare_du_risban', desc: 'Using given image showing a coastline and lighthouse,identify the name  of the location?', hint: 'Check the sequence of port knocking in the logs. The flag is a specific lighthouse name.' },
         { id: 'module_06', title: 'MISSION_06: SYSTEM_ROOT', points: 2500, flag: 'FLAG{Kgisl@OSINT_MASTER}', desc: 'THE FINAL CHALLENGE. This mission unlocks ONLY when all previous sectors are secured. Access the root of the event network.', hint: 'The flag is the event password followed by OSINT_MASTER.' }
     ];
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalContent = document.getElementById('modal-mission-content');
     const startMissionBtn = document.getElementById('start-mission-btn');
     const timerDisplay = document.getElementById('modal-timer');
-    
+
     const modalTitle = document.getElementById('modal-title');
     const modalDesc = document.getElementById('modal-desc');
     const modalDiff = document.getElementById('modal-diff');
@@ -100,12 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isLoggedIn === 'true') {
         [cred1, cred2, introOverlay, loginOverlay, instrOverlay].forEach(el => {
-            if(el) {
+            if (el) {
                 el.style.display = 'none';
                 el.classList.add('hidden');
             }
         });
-        
+
         if (userRole === 'admin' && !window.location.href.includes('admin.html')) {
             window.location.href = 'admin.html';
         } else if (window.location.href.includes('admin.html')) {
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncUserDataLocally() {
         const username = localStorage.getItem('currentUsername');
         if (!username) return;
-        
+
         db.ref(`users/${username}`).on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const cred2Text = cred2.querySelector('.reveal-fade');
                     if (cred2Text) cred2Text.classList.add('animate-reveal-fade');
                 }
-                
+
                 setTimeout(() => {
                     if (cred2) cred2.style.opacity = '0';
                     setTimeout(() => {
@@ -185,12 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             title.innerText = title.innerText.split("")
                 .map((char, index) => {
-                    if(index < iteration) return titleText[index];
+                    if (index < iteration) return titleText[index];
                     return chars[Math.floor(Math.random() * 26)];
                 })
                 .join("");
-            
-            if(iteration >= titleText.length) clearInterval(interval);
+
+            if (iteration >= titleText.length) clearInterval(interval);
             iteration += 1 / 3;
         }, 50);
 
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const progressInterval = setInterval(() => {
             progress += Math.random() * 5;
             if (progress > 100) progress = 100;
-            
+
             if (meterBar) meterBar.style.width = `${progress}%`;
             if (meterText) meterText.innerText = `INITIALIZING INTEL_LINK... [${Math.floor(progress)}%]`;
 
@@ -223,15 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTriggerBtn = document.getElementById('login-trigger');
     const authFeedback = document.getElementById('auth-feedback');
     const STATIC_PASSWORD = "Kgisl@12345";
-    
+
     if (loginTriggerBtn) {
         loginTriggerBtn.addEventListener('click', () => {
             const activeTab = document.querySelector('.auth-tab.active');
             const mode = activeTab ? activeTab.getAttribute('data-mode') : 'login';
-            
+
             const username = document.getElementById('auth-id')?.value.trim();
             const password = document.getElementById('auth-token')?.value.trim();
-            
+
             if (authFeedback) authFeedback.innerText = '';
 
             if (!username || !password) {
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('userRole', 'player');
                     localStorage.setItem('currentUsername', username);
-                    
+
                     if (authFeedback) {
                         authFeedback.style.color = 'var(--accent-secondary)';
                         authFeedback.innerText = 'SUCCESS: AUTH_GRANTED';
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             line.classList.add('terminal-line');
             line.innerText = `> ${logs[logIndex]}`;
             terminal.appendChild(line);
-            if(terminal.children.length > 5) terminal.removeChild(terminal.firstChild);
+            if (terminal.children.length > 5) terminal.removeChild(terminal.firstChild);
             logIndex = (logIndex + 1) % logs.length;
         }, 2000);
     }
@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeHUD() {
         const hudInner = document.querySelector('.hud-inner');
-        if(hudInner && !document.querySelector('.radar-sweep')) {
+        if (hudInner && !document.querySelector('.radar-sweep')) {
             const sweep = document.createElement('div');
             sweep.classList.add('radar-sweep');
             hudInner.appendChild(sweep);
@@ -398,11 +398,11 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             modal.dataset.currentId = data.id;
 
-            if(flagInput) flagInput.value = '';
-            if(flagFeedback) flagFeedback.innerText = '';
+            if (flagInput) flagInput.value = '';
+            if (flagFeedback) flagFeedback.innerText = '';
             missionAttempts = 0;
             if (timerInterval) clearInterval(timerInterval);
-            
+
             const solved = JSON.parse(localStorage.getItem('solvedChallenges') || '[]');
             const savedStart = localStorage.getItem(`mission_start_${data.id}`);
 
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalTitle.innerText = challData.title;
                 modalDesc.innerText = challData.desc;
             }
-            
+
             modal.classList.remove('hidden');
             modal.style.display = 'flex';
         });
@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
         const normEntered = normalize(enteredFlag);
-        
+
         const checks = {
             'module_01': () => normEntered === normalize("Millicent Garrett Fawcett and (london, unitedkindom)"),
             'module_02': () => normEntered === normalize("mahatma gadhi") || normEntered === normalize("mahatma gandhi"),
@@ -500,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             flagFeedback.innerText = `ACCESS_GRANTED // FLAG_VERIFIED // TIER: ${tier}`;
             flagFeedback.style.color = 'var(--accent-secondary)';
-            
+
             localStorage.removeItem(`mission_start_${challengeId}`);
             saveProgressFirebase(challengeId, timeTaken, score, tier);
         } else {
@@ -517,12 +517,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = snapshot.val();
             const solvedChallenges = user.solvedChallenges || [];
             if (!solvedChallenges.includes(id)) solvedChallenges.push(id);
-            
+
             const challengeDetails = user.challengeDetails || {};
             challengeDetails[id] = { timeTaken, score, tier, solvedAt: new Date().toISOString() };
-            
+
             const totalPoints = Object.values(challengeDetails).reduce((sum, d) => sum + d.score, 0);
-            
+
             db.ref(`users/${username}`).update({
                 solvedChallenges, challengeDetails, totalPoints,
                 lastActive: new Date().toISOString()
@@ -536,9 +536,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (solved.includes(card.dataset.id)) {
                 card.classList.add('solved');
                 const btn = card.querySelector('.btn-text');
-                if(btn) btn.innerText = 'MISSION_COMPLETE ✓';
+                if (btn) btn.innerText = 'MISSION_COMPLETE ✓';
             }
-            
+
             // Special logic for Module 6
             if (card.dataset.id === 'module-6') {
                 const required = ['module-1', 'module-2', 'module-3', 'module-4', 'module-5'];
@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.style.opacity = '0.3';
                     card.style.pointerEvents = 'none';
                     const btn = card.querySelector('.btn-text');
-                    if(btn) btn.innerText = 'LOCKED: SECURE_PREVIOUS_SECTORS';
+                    if (btn) btn.innerText = 'LOCKED: SECURE_PREVIOUS_SECTORS';
                 }
             }
         });
@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userList = Object.keys(usersData).map(username => ({
                 username, ...usersData[username]
             })).filter(u => u.role !== 'admin');
-            
+
             renderAdminDashboard(userList);
         });
     }
@@ -572,9 +572,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAdminDashboard(userList) {
         const statActive = document.getElementById('stat-active-operators');
         const statMissions = document.getElementById('stat-missions-completed');
-        if(statActive) statActive.innerText = userList.length;
-        if(statMissions) statMissions.innerText = userList.reduce((sum, u) => sum + (u.solvedChallenges?.length || 0), 0);
-        
+        if (statActive) statActive.innerText = userList.length;
+        if (statMissions) statMissions.innerText = userList.reduce((sum, u) => sum + (u.solvedChallenges?.length || 0), 0);
+
         const leaderboardBody = document.getElementById('leaderboard-body');
         if (leaderboardBody) {
             userList.sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0));
@@ -584,10 +584,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (user.totalPoints >= 3000) badges.push('💎 ELITE');
                 if (user.solvedChallenges?.length >= 5) badges.push('🏆 COMPLETIONIST');
                 if (user.totalPoints > 0 && user.totalPoints < 500) badges.push('🔰 ROOKIE');
-                
+
                 const level = user.totalPoints > 3000 ? 'ELITE' : (user.totalPoints > 1500 ? 'VETERAN' : 'RECON');
                 return `<tr>
-                    <td class="${rank <= 3 ? ['rank-gold','rank-silver','rank-bronze'][rank-1] : ''}">#${rank.toString().padStart(2, '0')}</td>
+                    <td class="${rank <= 3 ? ['rank-gold', 'rank-silver', 'rank-bronze'][rank - 1] : ''}">#${rank.toString().padStart(2, '0')}</td>
                     <td class="mono">${user.username} <div class="badge-list">${badges.join(' ')}</div></td>
                     <td>${level}</td>
                     <td>${(user.solvedChallenges?.length || 0)}/05</td>
@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 db.ref(`users/${username}`).once('value').then(snapshot => {
                     const data = snapshot.val();
                     const currentPoints = data.totalPoints || 0;
-                    
+
                     // Check if hint has already been requested for this challenge
                     const requestedHints = data.requestedHints || {};
                     if (requestedHints[currentChallengeId]) {
@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = snapshot.val();
         const alertOverlay = document.getElementById('broadcast-alert');
         const alertText = document.getElementById('alert-text');
-        
+
         // Only show if the message is new (sent after this session started)
         if (data && data.message && data.timestamp > sessionStartTime) {
             if (alertOverlay && alertText) {
@@ -743,20 +743,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTacticalMap(users) {
         const map = document.getElementById('tactical-map');
         if (!map) return;
-        
+
         // Clear old pings
         map.querySelectorAll('.ping').forEach(p => p.remove());
-        
+
         users.forEach(user => {
             const ping = document.createElement('div');
             ping.className = 'ping';
-            
+
             // Generate pseudo-random but stable position based on username
             let hash = 0;
             for (let i = 0; i < user.username.length; i++) hash = user.username.charCodeAt(i) + ((hash << 5) - hash);
             const x = Math.abs(hash % 80) + 10; // 10% to 90%
             const y = Math.abs((hash >> 8) % 60) + 20; // 20% to 80%
-            
+
             ping.style.left = x + '%';
             ping.style.top = y + '%';
             ping.title = `OPERATOR: ${user.username}`;
@@ -766,14 +766,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize map update in the admin render
     const originalRenderAdmin = renderAdminDashboard;
-    renderAdminDashboard = function(userList) {
+    renderAdminDashboard = function (userList) {
         originalRenderAdmin(userList);
         updateTacticalMap(userList);
     };
 
     // Integrate feed push in challenge completion
     const originalShowResult = showResult;
-    window.showResult = function(isCorrect, points) {
+    window.showResult = function (isCorrect, points) {
         originalShowResult(isCorrect, points);
         if (isCorrect) {
             const currentChallenge = challenges[currentChallengeIndex];
@@ -809,10 +809,10 @@ document.addEventListener('DOMContentLoaded', () => {
         db.ref('users').once('value').then(snapshot => {
             const usersData = snapshot.val() || {};
             const userList = Object.keys(usersData).map(username => ({ username, ...usersData[username] })).filter(u => u.role !== 'admin');
-            
+
             const head = document.getElementById('preview-headers');
             if (head) head.innerHTML = ["ID", "EMAIL", "PHONE", "MISSIONS", "POINTS", "ACTION"].map(h => `<th>${h}</th>`).join('');
-            
+
             const body = document.getElementById('preview-body');
             if (body) body.innerHTML = userList.map(u => `<tr>
                 <td class="mono">${u.username}</td>
@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${u.totalPoints || 0}</td>
                 <td><button class="btn-delete" data-username="${u.username}">DELETE</button></td>
             </tr>`).join('') || '<tr><td colspan="6">NO_DATA</td></tr>';
-            
+
             document.getElementById('data-preview-modal')?.classList.remove('hidden');
         });
     }
